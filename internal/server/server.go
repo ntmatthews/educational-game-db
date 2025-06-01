@@ -4,30 +4,58 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"educational-game-db/internal/database"
 	"educational-game-db/internal/handlers"
+	"educational-game-db/internal/middleware"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	db     *database.Database
-	router *gin.Engine
-	port   string
+	db          *database.Database
+	router      *gin.Engine
+	port        string
+	rateLimiter *middleware.RateLimiter
 }
 
 func NewServer(db *database.Database, port string) *Server {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-	
+
 	server := &Server{
-		db:     db,
-		router: router,
-		port:   port,
+		db:          db,
+		router:      router,
+		port:        port,
+		rateLimiter: middleware.NewRateLimiter(),
 	}
 
+	server.setupMiddleware()
 	server.setupRoutes()
 	return server
+}
+
+func (s *Server) setupMiddleware() {
+	// CORS configuration
+	config := cors.Config{
+		AllowOrigins:     []string{"*"}, // In production, specify allowed origins
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-API-Key", "X-Request-ID"},
+		ExposeHeaders:    []string{"X-Request-ID"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}
+
+	s.router.Use(cors.New(config))
+
+	// Security middleware
+	s.router.Use(middleware.SecurityHeaders())
+	s.router.Use(middleware.RequestIDMiddleware())
+	s.router.Use(middleware.LoggingMiddleware())
+
+	// Rate limiting - 100 requests per minute per IP
+	s.router.Use(s.rateLimiter.RateLimit(100, 20))
 }
 
 func (s *Server) setupRoutes() {
@@ -59,6 +87,15 @@ func (s *Server) setupRoutes() {
 		api.DELETE("/accounts/:id", handler.DeleteAccount)
 		api.GET("/stats", handler.GetStats)
 		api.POST("/login", handler.Login)
+		
+		// Export/Import routes (with stricter rate limiting)
+		exportGroup := api.Group("/export")
+		exportGroup.Use(s.rateLimiter.RateLimit(10, 2)) // More restrictive for export/import
+		{
+			exportGroup.GET("/csv", handler.ExportCSV)
+			exportGroup.GET("/json", handler.ExportJSON)
+			exportGroup.POST("/csv", handler.ImportCSV)
+		}
 	}
 
 	// Health check
