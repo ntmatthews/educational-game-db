@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Educational Game Database - Admin Dashboard">
+    <meta name="theme-color" content="#2563eb">
+    <title>{{.title}} - Educational Game Database</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="EduGameDB Admin">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/icon-32x32.png">
+    <link rel="apple-touch-icon" href="/static/icons/icon-192x192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="/" class="logo">🎓 EduGameDB Admin</a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Student Portal</a></li>
+                <li><a href="/admin" class="nav-link active">Admin Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Loading Indicator -->
+            <div id="loader" class="loading" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalAccounts">0</div>
+                    <div class="stat-label">Total Accounts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="activeAccounts">0</div>
+                    <div class="stat-label">Active Accounts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="inactiveAccounts">0</div>
+                    <div class="stat-label">Inactive Accounts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="averageLevel">0</div>
+                    <div class="stat-label">Average Level</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalExperience">0</div>
+                    <div class="stat-label">Total Experience</div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Account Management</h2>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-primary" onclick="showCreateModal()">Create Account</button>
+                        <button class="btn btn-secondary" id="exportBtn">Export Data</button>
+                        <button class="btn btn-secondary" id="refreshBtn">Refresh</button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
+                    <div style="flex: 1;">
+                        <input type="text" id="searchInput" class="form-input" placeholder="Search accounts...">
+                    </div>
+                    <div>
+                        <select id="filterSelect" class="form-select">
+                            <option value="all">All Accounts</option>
+                            <option value="active">Active Only</option>
+                            <option value="inactive">Inactive Only</option>
+                            <option value="recent">Recent (Last 7 days)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Accounts Table -->
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Full Name</th>
+                                <th>Grade</th>
+                                <th>School</th>
+                                <th>Level</th>
+                                <th>XP</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accountsTableBody">
+                            <!-- Accounts will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create Account Modal -->
+    <div id="createAccountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Account</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="createAccountForm" class="form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="createFirstName" class="form-label">First Name</label>
+                        <input type="text" id="createFirstName" name="firstName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createLastName" class="form-label">Last Name</label>
+                        <input type="text" id="createLastName" name="lastName" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="createUsername" class="form-label">Username</label>
+                    <input type="text" id="createUsername" name="username" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="createEmail" class="form-label">Email</label>
+                    <input type="email" id="createEmail" name="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="createPassword" class="form-label">Password</label>
+                    <input type="password" id="createPassword" name="password" class="form-input" required minlength="6">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="createGrade" class="form-label">Grade</label>
+                        <select id="createGrade" name="grade" class="form-select">
+                            <option value="0">Select Grade</option>
+                            <option value="1">1st Grade</option>
+                            <option value="2">2nd Grade</option>
+                            <option value="3">3rd Grade</option>
+                            <option value="4">4th Grade</option>
+                            <option value="5">5th Grade</option>
+                            <option value="6">6th Grade</option>
+                            <option value="7">7th Grade</option>
+                            <option value="8">8th Grade</option>
+                            <option value="9">9th Grade</option>
+                            <option value="10">10th Grade</option>
+                            <option value="11">11th Grade</option>
+                            <option value="12">12th Grade</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="createSchool" class="form-label">School</label>
+                        <input type="text" id="createSchool" name="school" class="form-input">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary close-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Account Modal -->
+    <div id="editAccountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Account</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="editAccountForm" class="form">
+                <input type="hidden" name="accountId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editFirstName" class="form-label">First Name</label>
+                        <input type="text" id="editFirstName" name="firstName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editLastName" class="form-label">Last Name</label>
+                        <input type="text" id="editLastName" name="lastName" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editGrade" class="form-label">Grade</label>
+                        <select id="editGrade" name="grade" class="form-select">
+                            <option value="0">Select Grade</option>
+                            <option value="1">1st Grade</option>
+                            <option value="2">2nd Grade</option>
+                            <option value="3">3rd Grade</option>
+                            <option value="4">4th Grade</option>
+                            <option value="5">5th Grade</option>
+                            <option value="6">6th Grade</option>
+                            <option value="7">7th Grade</option>
+                            <option value="8">8th Grade</option>
+                            <option value="9">9th Grade</option>
+                            <option value="10">10th Grade</option>
+                            <option value="11">11th Grade</option>
+                            <option value="12">12th Grade</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSchool" class="form-label">School</label>
+                        <input type="text" id="editSchool" name="school" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editGameLevel" class="form-label">Game Level</label>
+                        <input type="number" id="editGameLevel" name="gameLevel" class="form-input" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="editExperience" class="form-label">Experience</label>
+                        <input type="number" id="editExperience" name="experience" class="form-input" min="0" value="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="isActive" checked> Account Active
+                    </label>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary close-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer style="background: var(--white); text-align: center; padding: 1rem; margin-top: 2rem; border-top: 1px solid var(--border-color);">
+        <p>&copy; 2025 Educational Game Database Admin Panel</p>
+    </footer>
+
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>

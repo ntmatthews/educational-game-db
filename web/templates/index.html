@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Educational Game Database - Student Portal">
+    <meta name="theme-color" content="#2563eb">
+    <title>{{.title}} - Educational Game Database</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="EduGameDB">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/icon-32x32.png">
+    <link rel="apple-touch-icon" href="/static/icons/icon-192x192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="/" class="logo">🎓 EduGameDB</a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link" id="homeLink">Home</a></li>
+                <li><a href="/admin" class="nav-link">Admin</a></li>
+                <li><button class="btn btn-primary" id="installBtn" style="display: none;">Install App</button></li>
+                <li><button class="btn btn-secondary" id="logoutBtn" style="display: none;">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Loading Indicator -->
+            <div id="loader" class="loading" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- Login Section -->
+            <section id="loginSection" style="display: none;">
+                <div class="card" style="max-width: 400px; margin: 2rem auto;">
+                    <div class="card-header">
+                        <h2 class="card-title">Student Login</h2>
+                    </div>
+                    <form id="loginForm" class="form">
+                        <div class="form-group">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" id="username" name="username" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" id="password" name="password" class="form-input" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                    </form>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <p>Don't have an account? <a href="#" onclick="showRegister()" style="color: var(--primary-color);">Register here</a></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Register Section -->
+            <section id="registerSection" style="display: none;">
+                <div class="card" style="max-width: 500px; margin: 2rem auto;">
+                    <div class="card-header">
+                        <h2 class="card-title">Create Student Account</h2>
+                    </div>
+                    <form id="registerForm" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="regFirstName" class="form-label">First Name</label>
+                                <input type="text" id="regFirstName" name="firstName" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="regLastName" class="form-label">Last Name</label>
+                                <input type="text" id="regLastName" name="lastName" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="regUsername" class="form-label">Username</label>
+                            <input type="text" id="regUsername" name="username" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regEmail" class="form-label">Email</label>
+                            <input type="email" id="regEmail" name="email" class="form-input" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="regPassword" class="form-label">Password</label>
+                                <input type="password" id="regPassword" name="password" class="form-input" required minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label for="regPasswordConfirm" class="form-label">Confirm Password</label>
+                                <input type="password" id="regPasswordConfirm" name="passwordConfirm" class="form-input" required minlength="6">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="regGrade" class="form-label">Grade</label>
+                                <select id="regGrade" name="grade" class="form-select">
+                                    <option value="0">Select Grade</option>
+                                    <option value="1">1st Grade</option>
+                                    <option value="2">2nd Grade</option>
+                                    <option value="3">3rd Grade</option>
+                                    <option value="4">4th Grade</option>
+                                    <option value="5">5th Grade</option>
+                                    <option value="6">6th Grade</option>
+                                    <option value="7">7th Grade</option>
+                                    <option value="8">8th Grade</option>
+                                    <option value="9">9th Grade</option>
+                                    <option value="10">10th Grade</option>
+                                    <option value="11">11th Grade</option>
+                                    <option value="12">12th Grade</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="regSchool" class="form-label">School</label>
+                                <input type="text" id="regSchool" name="school" class="form-input">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+                    </form>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <p>Already have an account? <a href="#" onclick="showLogin()" style="color: var(--primary-color);">Login here</a></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" style="display: none;">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="userLevel">1</div>
+                        <div class="stat-label">Current Level</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="userExperience">0</div>
+                        <div class="stat-label">Experience Points</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="userGrade">N/A</div>
+                        <div class="stat-label">Grade</div>
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom: 2rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Student Profile</h3>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                <p><strong>Name:</strong> <span id="userFullName">-</span></p>
+                                <p><strong>Username:</strong> <span id="userUsername">-</span></p>
+                                <p><strong>Email:</strong> <span id="userEmail">-</span></p>
+                                <p><strong>School:</strong> <span id="userSchool">-</span></p>
+                                <p><strong>Member Since:</strong> <span id="userJoined">-</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Update Profile</h3>
+                        </div>
+                        <form id="profileForm" class="form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName" class="form-label">First Name</label>
+                                    <input type="text" name="firstName" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName" class="form-label">Last Name</label>
+                                    <input type="text" name="lastName" class="form-input" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="grade" class="form-label">Grade</label>
+                                    <select name="grade" class="form-select">
+                                        <option value="0">Select Grade</option>
+                                        <option value="1">1st Grade</option>
+                                        <option value="2">2nd Grade</option>
+                                        <option value="3">3rd Grade</option>
+                                        <option value="4">4th Grade</option>
+                                        <option value="5">5th Grade</option>
+                                        <option value="6">6th Grade</option>
+                                        <option value="7">7th Grade</option>
+                                        <option value="8">8th Grade</option>
+                                        <option value="9">9th Grade</option>
+                                        <option value="10">10th Grade</option>
+                                        <option value="11">11th Grade</option>
+                                        <option value="12">12th Grade</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="school" class="form-label">School</label>
+                                    <input type="text" name="school" class="form-input">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Game Progress</h3>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <h4>Level Progress</h4>
+                            <div style="background: var(--border-color); height: 20px; border-radius: 10px; overflow: hidden; margin: 1rem 0;">
+                                <div id="progressBar" style="background: var(--primary-color); height: 100%; width: 30%; transition: width 0.3s;"></div>
+                            </div>
+                            <p>Keep playing to earn more experience points and level up!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer style="background: var(--white); text-align: center; padding: 1rem; margin-top: 2rem; border-top: 1px solid var(--border-color);">
+        <p>&copy; 2025 Educational Game Database. Built with ❤️ for students.</p>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
