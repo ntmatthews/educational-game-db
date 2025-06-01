@@ -11,6 +11,7 @@ import (
 	"educational-game-db/internal/database"
 	"educational-game-db/internal/models"
 	"educational-game-db/internal/server"
+
 	"github.com/spf13/cobra"
 )
 
@@ -174,7 +175,7 @@ func listAccounts(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Printf("%-5s %-15s %-25s %-15s %-15s %-10s %-5s %-10s\n", 
+	fmt.Printf("%-5s %-15s %-25s %-15s %-15s %-10s %-5s %-10s\n",
 		"ID", "Username", "Email", "First Name", "Last Name", "Grade", "Level", "XP")
 	fmt.Println(strings.Repeat("-", 100))
 
@@ -183,7 +184,7 @@ func listAccounts(cmd *cobra.Command, args []string) {
 		if !account.IsActive {
 			status = "Inactive"
 		}
-		
+
 		fmt.Printf("%-5d %-15s %-25s %-15s %-15s %-10d %-5d %-10d [%s]\n",
 			account.ID, account.Username, account.Email, account.FirstName,
 			account.LastName, account.Grade, account.GameLevel, account.Experience, status)
@@ -312,9 +313,9 @@ func deleteAccount(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Printf("Are you sure you want to delete account for %s (%s)? (y/N): ", 
+	fmt.Printf("Are you sure you want to delete account for %s (%s)? (y/N): ",
 		account.Username, account.Email)
-	
+
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	confirmation := strings.ToLower(scanner.Text())
@@ -356,19 +357,19 @@ func startWebServer(cmd *cobra.Command, args []string) {
 
 func startInteractive(cmd *cobra.Command, args []string) {
 	scanner := bufio.NewScanner(os.Stdin)
-	
+
 	fmt.Println("Educational Game Database - Interactive Mode")
 	fmt.Println("Type 'help' for available commands, 'exit' to quit")
-	
+
 	for {
 		fmt.Print("> ")
 		scanner.Scan()
 		input := strings.TrimSpace(scanner.Text())
-		
+
 		if input == "exit" || input == "quit" {
 			break
 		}
-		
+
 		switch input {
 		case "help":
 			fmt.Println("Available commands:")
@@ -391,6 +392,6 @@ func startInteractive(cmd *cobra.Command, args []string) {
 			fmt.Printf("Unknown command: %s. Type 'help' for available commands.\n", input)
 		}
 	}
-	
+
 	fmt.Println("Goodbye!")
 }

@@ -16,10 +16,10 @@ import (
 func setupTestHandler() (*Handler, *database.Database) {
 	// Create test database
 	db, _ := database.NewDatabase(":memory:")
-	
+
 	// Create handler
 	handler := NewHandler(db)
-	
+
 	return handler, db
 }
 
@@ -49,7 +49,7 @@ func TestCreateAccountHandler(t *testing.T) {
 
 	// Create test response recorder
 	w := httptest.NewRecorder()
-	
+
 	// Create gin context
 	c, _ := gin.CreateTestContext(w)
 	c.Request = httpReq
@@ -123,7 +123,7 @@ func TestGetAccountHandler(t *testing.T) {
 
 	// Create HTTP request
 	httpReq, _ := http.NewRequest("GET", "/accounts/1", nil)
-	
+
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	c.Request = httpReq
@@ -153,7 +153,7 @@ func TestGetAccountHandlerNotFound(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	httpReq, _ := http.NewRequest("GET", "/accounts/99999", nil)
-	
+
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	c.Request = httpReq
@@ -183,7 +183,7 @@ func TestGetAccountsHandler(t *testing.T) {
 	}
 
 	httpReq, _ := http.NewRequest("GET", "/accounts", nil)
-	
+
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	c.Request = httpReq
@@ -222,7 +222,7 @@ func TestGetStatsHandler(t *testing.T) {
 	}
 
 	httpReq, _ := http.NewRequest("GET", "/stats", nil)
-	
+
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	c.Request = httpReq

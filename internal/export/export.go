@@ -40,8 +40,8 @@ func (e *ExportService) ExportToCSV(filename string) error {
 
 	// Write header
 	header := []string{
-		"ID", "Username", "Email", "FirstName", "LastName", 
-		"Grade", "School", "GameLevel", "Experience", 
+		"ID", "Username", "Email", "FirstName", "LastName",
+		"Grade", "School", "GameLevel", "Experience",
 		"CreatedAt", "UpdatedAt", "IsActive",
 	}
 	if err := writer.Write(header); err != nil {
@@ -87,11 +87,11 @@ func (e *ExportService) ExportToJSON(filename string) error {
 
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ")
-	
+
 	exportData := struct {
-		ExportedAt time.Time         `json:"exported_at"`
-		Count      int               `json:"count"`
-		Accounts   []models.Account  `json:"accounts"`
+		ExportedAt time.Time        `json:"exported_at"`
+		Count      int              `json:"count"`
+		Accounts   []models.Account `json:"accounts"`
 	}{
 		ExportedAt: time.Now(),
 		Count:      len(accounts),
@@ -253,8 +253,8 @@ func (e *ExportService) ExportStats(filename string) error {
 	defer file.Close()
 
 	exportData := struct {
-		ExportedAt time.Time              `json:"exported_at"`
-		Stats      models.AccountStats    `json:"stats"`
+		ExportedAt time.Time           `json:"exported_at"`
+		Stats      models.AccountStats `json:"stats"`
 	}{
 		ExportedAt: time.Now(),
 		Stats:      *stats,
@@ -262,7 +262,7 @@ func (e *ExportService) ExportStats(filename string) error {
 
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ")
-	
+
 	if err := encoder.Encode(exportData); err != nil {
 		return fmt.Errorf("failed to encode stats JSON: %w", err)
 	}

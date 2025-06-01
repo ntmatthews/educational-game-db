@@ -42,10 +42,10 @@ func (rl *RateLimiter) RateLimit(rps int, burst int) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Use client IP as the key
 		key := c.ClientIP()
-		
+
 		// Get the limiter for this IP
 		limiter := rl.getLimiter(key, rate.Limit(rps), burst)
-		
+
 		if !limiter.Allow() {
 			c.JSON(http.StatusTooManyRequests, gin.H{
 				"error":   "Rate limit exceeded",
@@ -54,7 +54,7 @@ func (rl *RateLimiter) RateLimit(rps int, burst int) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		
+
 		c.Next()
 	}
 }
@@ -63,7 +63,7 @@ func (rl *RateLimiter) RateLimit(rps int, burst int) gin.HandlerFunc {
 func (rl *RateLimiter) Cleanup() {
 	rl.mu.Lock()
 	defer rl.mu.Unlock()
-	
+
 	// Clear all limiters (in production, you might want more sophisticated cleanup)
 	rl.limiter = make(map[string]*rate.Limiter)
 }
@@ -73,7 +73,7 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// For now, this is a placeholder for authentication
 		// In a real application, you would validate JWT tokens or API keys here
-		
+
 		// Check for API key in header
 		apiKey := c.GetHeader("X-API-Key")
 		if apiKey == "" {
@@ -81,13 +81,13 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		
+
 		// Basic API key validation (in production, use proper validation)
 		validAPIKeys := map[string]bool{
 			"dev-key-123":   true,
 			"admin-key-456": true,
 		}
-		
+
 		if !validAPIKeys[apiKey] {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "Invalid API key",
@@ -95,7 +95,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		
+
 		c.Next()
 	}
 }
@@ -109,7 +109,7 @@ func SecurityHeaders() gin.HandlerFunc {
 		c.Header("X-XSS-Protection", "1; mode=block")
 		c.Header("Referrer-Policy", "strict-origin-when-cross-origin")
 		c.Header("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'")
-		
+
 		c.Next()
 	}
 }

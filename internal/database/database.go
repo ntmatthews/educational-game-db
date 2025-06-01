@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"educational-game-db/internal/models"
+
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -73,7 +74,7 @@ func (d *Database) CreateAccount(req models.CreateAccountRequest) (*models.Accou
 	`
 
 	now := time.Now()
-	result, err := d.db.Exec(query, req.Username, req.Email, string(hashedPassword), 
+	result, err := d.db.Exec(query, req.Username, req.Email, string(hashedPassword),
 		req.FirstName, req.LastName, req.Grade, req.School, now, now)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create account: %w", err)

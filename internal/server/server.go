@@ -9,6 +9,7 @@ import (
 	"educational-game-db/internal/database"
 	"educational-game-db/internal/handlers"
 	"educational-game-db/internal/middleware"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -87,7 +88,7 @@ func (s *Server) setupRoutes() {
 		api.DELETE("/accounts/:id", handler.DeleteAccount)
 		api.GET("/stats", handler.GetStats)
 		api.POST("/login", handler.Login)
-		
+
 		// Export/Import routes (with stricter rate limiting)
 		exportGroup := api.Group("/export")
 		exportGroup.Use(s.rateLimiter.RateLimit(10, 2)) // More restrictive for export/import
